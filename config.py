@@ -1,23 +1,29 @@
-from dotenv import load_dotenv
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 
-load_dotenv()
-if not os.getenv("BOT_TOKEN") and os.path.exists("env.txt"):
-    load_dotenv("env.txt")
+env_file = Path(".env")
+if not env_file.exists():
+    env_file = Path("env.txt")
+load_dotenv(env_file)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHAT_ID = os.getenv("CHAT_ID")
+CHAT_ID_STR = os.getenv("CHAT_ID")
 
 if BOT_TOKEN is None:
-    raise EnvironmentError(
-        "BOT_TOKEN is not set. Create a .env or env.txt file with BOT_TOKEN=..."
-    )
+    raise EnvironmentError("BOT_TOKEN is not set in the environment or env file")
+if CHAT_ID_STR is None:
+    raise EnvironmentError("CHAT_ID is not set in the environment or env file")
 
-BYBIT_API_KEY = os.getenv("BYBIT_API_KEY")
-BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET")
-
-TIMEFRAME = "60"
-MIN_VOLUME = 20_000
-MIN_K = 4.8
+try:
+    CHAT_ID = int(CHAT_ID_STR)
+except ValueError as exc:
+    raise ValueError("CHAT_ID must be an integer") from exc
 
 BYBIT_BASE_URL = "https://api.bybit.com"
+
+MIN_K = 3
+MIN_VOLUME = 20_000
+
+MIN_PRICE_CHANGE = 5.0
+MIN_OI_CHANGE = 5.0

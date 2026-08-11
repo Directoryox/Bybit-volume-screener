@@ -1,4 +1,5 @@
 import asyncio
+
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 from aiogram.filters import Command
@@ -7,10 +8,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from config import BOT_TOKEN, CHAT_ID
 from scanner import scan_market, format_results
 
-
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
-
 
 @dp.message(Command("start"))
 async def start_handler(message: Message):
@@ -21,7 +20,6 @@ async def start_handler(message: Message):
         "/start - информация"
     )
 
-
 @dp.message(Command("scan"))
 async def scan_handler(message: Message):
     await message.answer(
@@ -30,9 +28,7 @@ async def scan_handler(message: Message):
 
     results = await scan_market()
     text = format_results(results)
-
     await message.answer(text)
-
 
 async def auto_scan():
     print("Запуск автоматического сканирования")
@@ -49,7 +45,6 @@ async def auto_scan():
     else:
         print("Сигналов нет")
 
-
 async def main():
     scheduler = AsyncIOScheduler()
     scheduler.add_job(
@@ -61,7 +56,6 @@ async def main():
     scheduler.start()
     print("Bot started")
     await dp.start_polling(bot)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
